@@ -1,12 +1,23 @@
 import copy
 from collections import namedtuple
+from functools import wraps
 from sys import argv
-from time import time
+from time import perf_counter, time
 
 
 M = namedtuple("M", "destination source length")
 
 BIG_MAP = {}
+
+
+def execution_time(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        time_start = perf_counter()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__}: {result} | Execution time: {perf_counter() - time_start}")
+        return result
+    return wrapper
 
 
 def read_input():
@@ -35,11 +46,11 @@ def big_mapper(seed) -> int:
                         small_mapper(
                             "soil-to-fertilizer",
                             small_mapper("seed-to-soil", seed),
-                        )
-                    )
-                )
-            )
-        )
+                        ),
+                    ),
+                ),
+            ),
+        ),
     )
 
 
@@ -61,6 +72,17 @@ def parse_input(data):
             BIG_MAP[section_name] = [int(x) for x in section_data.split()]
 
 
+def seed_range_creator():
+    odd_items = [BIG_MAP["seeds"][x] for x in range(len(BIG_MAP["seeds"])) if x % 2 == 0]
+    even_items = [BIG_MAP["seeds"][x] for x in range(len(BIG_MAP["seeds"])) if x % 2 == 1]
+
+    seed_ranges = []
+    for start, length in zip(odd_items, even_items):
+        seed_ranges.append([start, start + length])
+
+    return seed_ranges
+
+
 def seed_generator():
     odd_items = [BIG_MAP["seeds"][x] for x in range(len(BIG_MAP["seeds"])) if x % 2 == 0]
     even_items = [BIG_MAP["seeds"][x] for x in range(len(BIG_MAP["seeds"])) if x % 2 == 1]
@@ -73,23 +95,26 @@ def seed_generator():
             value += 1
 
 
+@execution_time
 def part_1():
-    start_time = time()
     locations = []
     for seed in BIG_MAP["seeds"]:
         locations.append(big_mapper(seed))
-    print(f"Part 1: {min(locations)} | Execution time: {time() - start_time}")
+
+    return min(locations)
 
 
-def part_2():
-    start_time = time()
+@execution_time
+def part_2_original():
     print("\nStarting part 2! This is going to take a few hours...")
+
     closest_location = 9999999999999
     for seed in seed_generator():
         current_location = big_mapper(seed)
         if current_location < closest_location:
             closest_location = current_location
-    print(f"Part 2: {closest_location} | Execution time: {time() - start_time}")
+
+    return closest_location
 
 
 def small_backwards_mapper(name: str, val: int) -> int:
@@ -99,12 +124,18 @@ def small_backwards_mapper(name: str, val: int) -> int:
     return val
 
 
-def valid_seed(seed: int) -> bool:
+def valid_seed(ranges: list[list[int]], seed: int) -> bool:
+    for range in ranges:
+        start, end = range
+        if seed > start and seed < end:
+            return True
+
     return False
 
 
-def big_backwards_mapper(location):
+def big_backwards_mapper(location, seed_ranges):
     return valid_seed(
+        seed_ranges,
         small_backwards_mapper(
             "seed-to-soil",
             small_backwards_mapper(
@@ -127,14 +158,20 @@ def big_backwards_mapper(location):
     )
 
 
+@execution_time
+def part_2(data):
+    seed_ranges = seed_range_creator()
+    location = 0
+    while True:
+        if big_backwards_mapper(location, seed_ranges):
+            return location
+        location += 1
+
+
 if __name__ == "__main__":
     data = read_input()
     parse_input(data)
     part_1()  # Correct answer: 993500720
-    # Part 2 took 4h 55m 52.090323s to finish - 4:55:52.090323
-    # Part 2 takes way too long to finish...
-    # Ways to speed up part 2:
-    #   * Can work backwards, starting from location 0 and finding the seed that matches that location.
-    #        Should be quicker because I only have to search trhough ~5 million possibilities.
-    #   * Try solving using the set idea from 2023 Day 19
-    part_2()  # Correct answer: 4917124
+    # part_2_original()  # My original brute force solution for Part 2 took 4h 55m 52s to finish - 4:55:52
+    part_2(data)  # Correct answer: 4917124
+    #  Try solving using the set idea from 2023 Day 19
