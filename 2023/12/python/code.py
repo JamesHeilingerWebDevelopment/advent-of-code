@@ -129,7 +129,7 @@ def recursive_solution(springs: str, backup: str, hash_count: int) -> int:
             total += recursive_solution(springs[1:], backup, 0)
 
         # Try is as if it was a "#"
-            total += recursive_solution(springs[1:], backup, hash_count + 1)
+        total += recursive_solution(springs[1:], backup, hash_count + 1)
 
     return total
 
