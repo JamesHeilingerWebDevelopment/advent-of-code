@@ -26,6 +26,6 @@ def part_2(top_three):
 
 
 if __name__ == "__main__":
-    # Part 1 answer: 
-    # Part 2 answer: 
-    part_2(part_1(read_input()))  # Correct answer: 
+    # Part 1 answer: 74394
+    # Part 2 answer: 212836
+    part_2(part_1(read_input()))

@@ -54,5 +54,5 @@ def part_2(data):
 
 if __name__ == "__main__":
     data = read_input()
-    part_1(data)  # Correct answer: 
-    part_2(data)  # Correct answer: 
+    part_1(data)  # Correct answer: 9177
+    part_2(data)  # Correct answer: 1211
