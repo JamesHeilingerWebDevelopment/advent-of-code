@@ -1,5 +1,4 @@
 from sys import argv
-from time import time
 
 
 def read_input():
@@ -8,7 +7,6 @@ def read_input():
 
 
 def part_1(data):
-    start_time = time()
     horizontal = 0
     depth = 0
     for instruction in data:
@@ -21,11 +19,10 @@ def part_1(data):
             depth -= int(unit)
     print("Horizontal =", horizontal)
     print("Depth =", depth)
-    print(f"Part 1: {horizontal * depth} | Execution time: {time() - start_time}")
+    print(f"Part 1: {horizontal * depth}")
 
 
 def part_2(data):
-    start_time = time()
     horizontal = 0
     depth = 0
     aim = 0
@@ -38,10 +35,10 @@ def part_2(data):
             aim += int(unit)
         elif direction == "up":
             aim -= int(unit)
-    print(f"Part 2: {horizontal * depth} | Execution time: {time() - start_time}")
+    print(f"Part 2: {horizontal * depth}")
 
 
 if __name__ == "__main__":
     data = read_input()
-    part_1(data)  # Correct answer: 
-    part_2(data)  # Correct answer: 
+    part_1(data)  # Correct answer: 1604850
+    part_2(data)  # Correct answer: 1685186100
