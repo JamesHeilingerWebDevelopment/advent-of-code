@@ -1,4 +1,6 @@
 # Files I don't want to track
+input.txt
+example.txt
 example_input.txt
 
 # Byte-compiled / optimized / DLL files
