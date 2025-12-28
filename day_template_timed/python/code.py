@@ -20,12 +20,12 @@ def read_input():
 
 @execution_time
 def part_1(data):
-    print(f"Part 1: {None}")
+    return None
 
 
 @execution_time
 def part_2(data):
-    print(f"Part 2: {None}")
+    return None
 
 
 if __name__ == "__main__":

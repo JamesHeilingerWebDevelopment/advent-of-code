@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from ses import dataclass
 from sys import argv
 
 
